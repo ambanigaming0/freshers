@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DDU BCA FRESHER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f389.png" type="image/png">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg2: #0f172a;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.25);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --radius: 14px;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%);
+      color: var(--text);
+      padding: 25px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .top-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .top-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .top-btn:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .box {
+      max-width: 450px;
+      margin: auto;
+      background: linear-gradient(145deg, var(--bg2), #020617);
+      padding: 22px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.20);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.85);
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 11px;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #020617;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    button:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    #passwordModal,
+    #qrPopup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      display: none;
+    }
+
+    .modal, .qr-modal {
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 60%);
+      padding: 25px;
+      width: 300px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.4);
+      text-align: center;
+      animation: popIn .2s ease;
+    }
+
+    .qr-modal {
+      width: 320px;
+    }
+
+    #popupQR {
+      width: 230px;
+      height: 230px;
+      margin: 10px auto;
+      border-radius: 10px;
+      display: block;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>QR Pass Generator</h1>
+
+  <div class="top-buttons">
+    <button class="top-btn" onclick="location.href='/verify.html'">Verify</button>
+    <button class="top-btn" onclick="location.href='/admin.html'">Admin</button>
+  </div>
+
+  <div class="box">
+    <label>Name</label>
+    <input type="text" id="name" placeholder="Enter Name">
+
+    <label>Food</label>
+    <select id="food">
+      <option value="No">No</option>
+      <option value="Yes">Yes</option>
+    </select>
+
+    <button onclick="requestPassword()">Generate QR</button>
+  </div>
+
+  <!-- Password Modal -->
+  <div id="passwordModal">
+    <div class="modal">
+      <h3>Admin Access</h3>
+      <input type="password" id="password" placeholder="Admin Password">
+      <button onclick="checkPassword()">Submit</button>
+    </div>
+  </div>
+
+  <!-- QR POPUP -->
+  <div id="qrPopup">
+    <div class="qr-modal">
+      <h3 id="popupTitle">Pass Created</h3>
+      <img id="popupQR" src="">
+      <p id="popupInfo" style="color:#9ca3af; font-size:13px;"></p>
+
+      <button onclick="downloadQR()">Download</button>
+      <button onclick="closePopup()" 
+        style="background:transparent;margin-top:8px;border:1px solid #475569;color:#94a3b8;">
+        Close
+      </button>
+    </div>
+  </div>
+
+<script>
+let REAL_PASS = "Ashish@3003";
+// Load password from conf.json
+// fetch("/conf.json")
+//   .then(res => res.json())
+//   .then(cfg => {
+//     REAL_PASS = cfg.PASS;
+//   });
+
+async function loadPassword() {
+  try {
+    const res = await fetch("/conf.json");
+    const cfg = await res.json();
+    REAL_PASS = cfg.PASS;
+
+    // Enable button only when password is loaded
+    document.getElementById("checkBtn").disabled = false;
+
+  } catch (err) {
+    console.error("Failed to load conf.json", err);
+  }
+}
+
+// Load on page start
+loadPassword();
+
+function requestPassword() {
+  document.getElementById("passwordModal").style.display = "flex";
+}
+
+function checkPassword() {
+  const userPass = document.getElementById("password").value.trim();
+
+  if (REAL_PASS === null) {
+    alert("Config not loaded yet! Try again.");
+    return;
+  }
+
+  if (userPass === REAL_PASS) {
+    document.getElementById("passwordModal").style.display = "none";
+    generateQR();
+  } else {
+    alert("Incorrect Password!");
+  }
+}
+
+
+function generateQR() {
+  const name = document.getElementById("name").value.trim();
+  const food = document.getElementById("food").value;
+
+  if (!name) return alert("Enter name");
+
+  fetch("/save-pass", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, food })
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (!result.success) return alert("Error: " + result.message);
+
+    const qrURL = `/admin-qrs/${result.id}.png?token=${REAL_PASS}`;
+
+    document.getElementById("popupQR").src = qrURL;
+    document.getElementById("popupTitle").innerText =
+      `Pass Created (ID: ${result.id})`;
+    document.getElementById("popupInfo").innerText =
+      `Name: ${name} • Food: ${food}`;
+    document.getElementById("qrPopup").style.display = "flex";
+  });
+}
+
+function downloadQR() {
+  const img = document.getElementById("popupQR").src;
+  const a = document.createElement("a");
+  a.href = img;
+  a.download = "pass-qr.png";
+  a.click();
+}
+
+function closePopup() {
+  document.getElementById("qrPopup").style.display = "none";
+}
+</script>
+
+</body>
+</html>

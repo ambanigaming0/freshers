@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel - QR Passes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2620.png" type="image/png">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg2: #0f172a;
+      --bg3: #1e293b;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.2);
+      --danger: #ef4444;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    #loginBox,
+    #adminPanel {
+      max-width: 1100px;
+      margin: 20px auto;
+      background: linear-gradient(145deg, var(--bg2), #020617);
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.85);
+      padding: 22px 22px 18px;
+    }
+
+    #loginBox h3 {
+      margin-top: 0;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #020617;
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+    }
+
+    input::placeholder {
+      color: var(--muted);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    button {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+    }
+
+    button.btn-danger {
+      background: var(--danger);
+    }
+
+    button.btn-danger:hover {
+      background: #b91c1c;
+      box-shadow: 0 10px 24px rgba(239, 68, 68, 0.4);
+    }
+
+    button.btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      box-shadow: none;
+    }
+
+    button.btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 999px;
+    }
+
+    /* Controls Bar */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .controls-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .controls-group > div {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .controls-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    /* Table */
+    .table-wrapper {
+      margin-top: 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.95);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    tr {
+      transition: background 0.1s ease, transform 0.05s ease;
+    }
+
+    tr:hover {
+      background: rgba(30, 64, 175, 0.22);
+      cursor: pointer;
+    }
+
+    td.actions {
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-yes {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+    }
+
+    .badge-no {
+      background: rgba(248, 113, 113, 0.15);
+      color: #fca5a5;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* QR Modal & Edit Modal */
+    #qrModal,
+    #editModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-box {
+      background: radial-gradient(circle at top left, #1d4ed8 0, #020617 45%);
+      padding: 22px 20px 18px;
+      border-radius: 16px;
+      text-align: left;
+      min-width: 280px;
+      max-width: 380px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85);
+      animation: fadeIn 0.18s ease-out;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    #qrImage {
+      width: 260px;
+      height: 260px;
+      display: block;
+      margin: 12px auto 8px;
+    }
+
+    .modal-footer {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      #loginBox,
+      #adminPanel {
+        padding: 16px 14px 14px;
+      }
+      .controls {
+        flex-direction: column;
+      }
+      .controls-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .controls-actions button {
+        flex: 1;
+      }
+      table {
+        font-size: 12px;
+      }
+      th,
+      td {
+        padding: 8px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>QR Pass Admin Panel</h1>
+
+  <!-- LOGIN BOX -->
+  <div id="loginBox">
+    <h3>Admin Login</h3>
+    <p class="muted">Enter admin password to access all passes.</p>
+    <input
+      type="password"
+      id="adminPass"
+      placeholder="Admin Password"
+      autocomplete="off"
+    />
+    <div style="margin-top: 10px; text-align: right">
+      <button onclick="adminLogin()">Login</button>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" style="display: none">
+    <!-- Logout row (minimal UI change) -->
+    <div style="text-align:right; margin-bottom:8px;">
+      <button class="btn-danger btn-small" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="controls-group">
+        <div>
+          <div class="controls-label">Search</div>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by name or Pass ID..."
+          />
+        </div>
+        <div>
+          <div class="controls-label">Food</div>
+          <select id="foodFilter">
+            <option value="all">All</option>
+            <option value="Yes">Food: Yes</option>
+            <option value="No">Food: No</option>
+          </select>
+        </div>
+        <div>
+          <div class="controls-label">Date from</div>
+          <input type="date" id="dateFrom" />
+        </div>
+        <div>
+          <div class="controls-label">Date to</div>
+          <input type="date" id="dateTo" />
+        </div>
+      </div>
+
+      <div class="controls-actions">
+        <button class="btn-ghost btn-small" onclick="clearFilters()">
+          Clear Filters
+        </button>
+        <button class="btn-small" onclick="exportExcel()">
+          Export to Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <table id="passTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Pass ID</th>
+            <th>Food</th>
+            <th>Date</th>
+            <th style="text-align: right">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="muted" id="countInfo" style="margin-top: 8px">
+      Loading passes...
+    </p>
+  </div>
+
+  <!-- QR MODAL -->
+  <div id="qrModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="qrTitle">QR Code</h3>
+        <button class="modal-close" onclick="closeQR()">×</button>
+      </div>
+      <img id="qrImage" src="" alt="QR" />
+      <p class="muted" id="qrMeta"></p>
+      <div class="modal-footer">
+        <button class="btn-ghost btn-small" onclick="closeQR()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div id="editModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Edit Pass</h3>
+        <button class="modal-close" onclick="closeEdit()">×</button>
+      </div>
+
+      <div class="muted" style="font-size: 12px; margin-bottom: 6px">
+        Pass ID: <span id="editPassIdLabel"></span>
+      </div>
+
+      <label class="controls-label" style="margin-top: 4px">Name</label>
+      <input type="text" id="editName" />
+
+      <label class="controls-label" style="margin-top: 10px">Food</label>
+      <select id="editFood">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <div class="modal-footer">
+        <button class="btn-ghost btn-small" onclick="closeEdit()">
+          Cancel
+        </button>
+        <button class="btn-small" onclick="saveEdit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let adminPassword = null; // from /config
+    let passes = [];
+    let currentEditId = null;
+
+    // Fetch password from backend + check existing session
+    async function init() {
+      const cfg = await fetch("/config").then(r => r.json());
+      adminPassword = cfg.pass;
+
+      const exp = localStorage.getItem("adminSession");
+
+      if (exp && Date.now() < parseInt(exp)) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadPasses();
+      }
+    }
+
+    init()
+    .catch((err) => {
+        console.error("Config error:", err);
+      });
+
+    // 5-min session check
+    function checkSession() {
+      const exp = localStorage.getItem("adminSession");
+      if (exp && Date.now() < parseInt(exp)) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadPasses();
+      }
+    }
+
+    // Login
+    function adminLogin() {
+      const input = document.getElementById("adminPass").value.trim();
+
+      if (input === adminPassword) {
+        localStorage.setItem("adminSession", Date.now() + 5 * 60 * 1000);
+
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadPasses();
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+
+
+
+    // Logout (manual end before 5min)
+    function logout() {
+      localStorage.removeItem("adminSession");
+      document.getElementById("adminPanel").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("adminPass").value = "";
+    }
+
+    // Load passes from backend
+    function loadPasses() {
+      fetch("/get-passes", {
+        headers: {
+          "x-admin-pass": adminPassword,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          passes = data || [];
+          applyFiltersAndRender();
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Error loading passes");
+        });
+    }
+
+    // Filters & Search
+    const searchInput = document.getElementById("searchInput");
+    const foodFilter = document.getElementById("foodFilter");
+    const dateFrom = document.getElementById("dateFrom");
+    const dateTo = document.getElementById("dateTo");
+
+    searchInput.addEventListener("input", applyFiltersAndRender);
+    foodFilter.addEventListener("change", applyFiltersAndRender);
+    dateFrom.addEventListener("change", applyFiltersAndRender);
+    dateTo.addEventListener("change", applyFiltersAndRender);
+
+    function clearFilters() {
+      searchInput.value = "";
+      foodFilter.value = "all";
+      dateFrom.value = "";
+      dateTo.value = "";
+      applyFiltersAndRender();
+    }
+
+    function applyFiltersAndRender() {
+      const term = searchInput.value.trim().toLowerCase();
+      const food = foodFilter.value;
+      const fromVal = dateFrom.value;
+      const toVal = dateTo.value;
+
+      let filtered = passes.slice();
+
+      filtered = filtered.filter((p) => {
+        // search
+        if (term) {
+          const str =
+            (p.name || "") + " " + (p.id || "") + " " + (p.food || "");
+          if (!str.toLowerCase().includes(term)) return false;
+        }
+
+        // food
+        if (food !== "all" && p.food !== food) return false;
+
+        // date range
+        if (fromVal || toVal) {
+          const d = new Date(p.date);
+          if (fromVal) {
+            const fromDate = new Date(fromVal + "T00:00:00");
+            if (d < fromDate) return false;
+          }
+          if (toVal) {
+            const toDate = new Date(toVal + "T23:59:59");
+            if (d > toDate) return false;
+          }
+        }
+
+        return true;
+      });
+
+      renderTable(filtered);
+    }
+
+    // Render table
+    function renderTable(list) {
+      const tbody = document.querySelector("#passTable tbody");
+      tbody.innerHTML = "";
+
+      list.forEach((pass) => {
+        const tr = document.createElement("tr");
+
+        const foodBadge =
+          pass.food === "Yes"
+            ? '<span class="badge badge-yes">Yes</span>'
+            : '<span class="badge badge-no">No</span>';
+
+        tr.innerHTML = `
+          <td>${pass.name || "-"}</td>
+          <td>${pass.id || "-"}</td>
+          <td>${foodBadge}</td>
+          <td>${new Date(pass.date).toLocaleString()}</td>
+          <td class="actions" style="text-align:right;">
+            <button class="btn-small" data-action="edit">Edit</button>
+            <button class="btn-small btn-danger" data-action="delete">Delete</button>
+          </td>
+        `;
+
+        // row click → open QR
+        tr.addEventListener("click", (e) => {
+          const action = e.target.getAttribute("data-action");
+          if (action === "edit") {
+            e.stopPropagation();
+            openEdit(pass);
+          } else if (action === "delete") {
+            e.stopPropagation();
+            deletePass(pass);
+          } else {
+            openQR(pass);
+          }
+        });
+
+        tbody.appendChild(tr);
+      });
+
+      const info = document.getElementById("countInfo");
+      info.textContent = `Showing ${list.length} of ${passes.length} passes`;
+    }
+
+    // QR Modal
+    function openQR(pass) {
+      document.getElementById("qrTitle").innerText = pass.id;
+      document.getElementById("qrImage").src =
+        pass.qrPath + "?token=" + adminPassword;
+      document.getElementById("qrMeta").innerText =
+        (pass.name || "-") +
+        " • " +
+        (pass.food || "-") +
+        " • " +
+        new Date(pass.date).toLocaleString();
+      document.getElementById("qrModal").style.display = "flex";
+    }
+
+    function closeQR() {
+      document.getElementById("qrModal").style.display = "none";
+    }
+
+    // Edit Modal
+    function openEdit(pass) {
+      currentEditId = pass._id;
+      document.getElementById("editPassIdLabel").innerText = pass.id;
+      document.getElementById("editName").value = pass.name || "";
+      document.getElementById("editFood").value = pass.food || "No";
+      document.getElementById("editModal").style.display = "flex";
+    }
+
+    function closeEdit() {
+      currentEditId = null;
+      document.getElementById("editModal").style.display = "none";
+    }
+
+    function saveEdit() {
+      if (!currentEditId) return;
+
+      const name = document.getElementById("editName").value.trim();
+      const food = document.getElementById("editFood").value;
+
+      if (!name) {
+        alert("Name is required");
+        return;
+      }
+
+      fetch(`/update-pass/${currentEditId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-pass": adminPassword,
+        },
+        body: JSON.stringify({ name, food }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (!data.success) {
+            alert(data.message || "Error updating");
+            return;
+          }
+
+          const updated = data.pass;
+          const idx = passes.findIndex((p) => p._id === updated._id);
+          if (idx !== -1) passes[idx] = updated;
+
+          closeEdit();
+          applyFiltersAndRender();
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("Error updating pass");
+        });
+    }
+
+    // Delete Pass
+    function deletePass(pass) {
+      if (!confirm(`Delete ${pass.id}? This cannot be undone.`)) return;
+
+      fetch(`/delete-pass/${pass._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-pass": adminPassword
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) {
+            alert(data.message || "Error deleting");
+            return;
+          }
+
+          // FIX: Remove from passes array correctly
+          passes = passes.filter(p => p._id !== pass._id);
+
+          applyFiltersAndRender();
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error deleting pass");
+        });
+    }
+
+    // Export Excel (CSV)
+    function exportExcel() {
+      if (!passes || passes.length === 0) {
+        alert("No passes to export!");
+        return;
+      }
+
+      let csv = "ID,Name,Food,Date\n";
+
+      passes.forEach(p => {
+        csv += `${p.id},${p.name},${p.food},${new Date(p.date).toLocaleString()}\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "passes.csv";
+      a.click();
+
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+  </script>
+</body>
+</html>

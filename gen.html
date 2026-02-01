@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fresher Pass Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Oswald:wght@400;700&family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&family=Science+Gothic:wght@700&display=swap" rel="stylesheet">
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+body{
+    margin:0;padding:0;background:#121212;
+    display:flex;justify-content:center;align-items:center;height:100vh;
+    font-family:'Poppins',sans-serif;
+}
+
+.banner{
+    width:1100px;height:420px;position:relative;display:none;
+    border:3px solid #fff;
+    box-shadow:0 0 20px rgba(255,255,255,.5),0 0 40px rgba(188,19,254,.4);
+    background:#000;overflow:hidden;color:white;
+}
+
+/* LEFT SECTION */
+.left-section{
+    width:55%;
+    height:100%;
+    position:relative;
+
+    background:
+        radial-gradient(circle at 30% 40%, rgba(255,0,180,0.45), transparent 70%),
+        radial-gradient(circle at 70% 80%, rgba(0,150,255,0.35), transparent 75%),
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.15), transparent 60%),
+        url('https://www.transparenttextures.com/patterns/stardust.png'),
+        #14001e;
+
+    background-size: cover;
+    background-blend-mode: screen;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    border-right:1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+        inset 0 0 60px rgba(255,0,180,0.25),
+        inset 0 0 90px rgba(0,140,255,0.25);
+}
+
+.top-name{
+    font-family:'Teko';
+    font-size:45px;font-weight:700;
+    text-transform:uppercase;
+    text-shadow:0 0 10px #fff;
+    margin-top:-10px;
+}
+
+.subtitle{
+    font-family:'Dancing Script';
+    font-size:22px;
+}
+
+.typography-box{
+    display:flex;align-items:center;justify-content:center;
+}
+
+/* FRESHER'S – neon style */
+.freshers-text{
+    font-family: 'Science Gothic', sans-serif;
+    font-weight: 900;
+    font-size: 60px;
+    letter-spacing: 3px;
+    color: #ffffff;
+
+    text-shadow:
+        0 0 8px #ff67d4,
+        0 0 15px #ff67d4,
+        0 0 25px #33ccff;
+
+    -webkit-text-fill-color: #fff;
+}
+
+/* NEON DIVIDER LINE */
+.neon-line{
+    width: 75%;
+    height: 3px;
+    margin: 20px 0;
+
+    background: linear-gradient(90deg, #ff00cc, #00cfff);
+    border-radius: 10px;
+
+    box-shadow:
+        0 0 6px #ff00cc,
+        0 0 12px #00cfff,
+        0 0 20px #ff00cc;
+}
+
+/* Vertical FIX for html2canvas */
+.year-vertical{
+    font-family:'Teko';
+    font-size:45px;
+    font-weight:700;
+    color:#fff;
+
+    transform: rotate(90deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.party-text{
+    font-family:'Teko';
+    font-size:70px;
+    letter-spacing:15px;
+}
+
+/* RIGHT SIDE */
+.right-section{
+    width:45%;height:100%;background:#0d0d0d;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:0 30px;
+}
+
+.qr-box{
+    width:210px;height:210px;background:white;padding:5px;
+    border-radius:8px;box-shadow:0 0 20px rgba(51,204,255,.3);
+}
+
+#qrImageBox{
+    width:100%;height:100%;background-size:cover;background-position:center;
+}
+
+/* INPUT PANEL */
+.input-panel{
+    position:fixed;top:10px;left:50%;transform:translateX(-50%);
+    padding:10px 20px;background:#000c;border-radius:10px;border:1px solid #444;
+    z-index:9999;display:none;
+}
+.input-panel input{padding:6px 10px;border-radius:6px;margin-right:6px;border:none;}
+.input-panel button{padding:6px 12px;border:none;background:#33ccff;border-radius:6px;font-weight:600;cursor:pointer;}
+
+/* LOGIN */
+#loginOverlay{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:#0f172a;display:flex;justify-content:center;align-items:center;z-index:99999;
+}
+.login-box{
+    background:#1e293b;padding:25px;width:300px;border-radius:12px;
+    box-shadow:0 0 25px rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.1);text-align:center;
+}
+#loginPass{
+    width:100%;padding:10px;margin-top:10px;background:#0f172a;
+    border:1px solid #334155;border-radius:8px;color:white;
+}
+.login-btn{
+    width:100%;margin-top:15px;padding:10px;background:#3b82f6;
+    border:none;border-radius:8px;color:white;font-weight:600;cursor:pointer;
+}
+#loginError{color:#ef4444;margin-top:8px;display:none;}
+
+#logoutBtn{
+    display:none;position:fixed;top:10px;right:10px;z-index:9999;
+}
+#logoutBtn button{
+    padding:8px 15px;background:#ef4444;border:none;border-radius:8px;
+    color:white;font-weight:600;cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2 style="color:white;margin:0 0 10px;">Admin Login</h2>
+        <p style="color:#94a3b8;font-size:14px;">Enter Admin Password</p>
+
+        <input id="loginPass" type="password" placeholder="Password">
+        <button class="login-btn" onclick="adminLogin()">Login</button>
+
+        <p id="loginError">Wrong password!</p>
+    </div>
+</div>
+
+<!-- LOGOUT -->
+<div id="logoutBtn">
+    <button onclick="logout()">Logout</button>
+</div>
+
+<!-- INPUT PANEL -->
+<div class="input-panel">
+    <input id="idInput" type="number" placeholder="Enter Pass ID">
+    <button onclick="fetchPass()">Load</button>
+    <button onclick="downloadBanner()">Download</button>
+</div>
+
+<!-- BANNER -->
+<div class="banner" id="bannerCapture">
+    
+    <div id="passIdDisplay" 
+     	style="position:absolute; top:10px; right:10px; 
+            font-family:'Teko'; font-size:24px; 
+            background:rgba(0,0,0,0.6); padding:5px 12px; 
+            border-radius:8px; letter-spacing:1px;">
+    	PASS ID: --
+	</div>
+
+
+    <div class="left-section">
+        <div id="dynamicName" class="top-name">NAME</div>
+
+        <div class="subtitle">You are Invited to</div>
+
+        <div class="typography-box">
+            <div class="freshers-text">FRESHER'S</div>
+            <div class="year-vertical">2K25</div>
+        </div>
+
+        <!-- Neon divider line -->
+        <div class="neon-line"></div>
+
+        <div class="party-text">PARTY</div>
+    </div>
+
+    <div class="right-section">
+        <div>
+            <div style="font-size:35px;font-family:Oswald;font-weight:700;">10 DEC 2025</div>
+            <div style="font-size:12px;color:#ff88cc;">UNLIMITED FOOD | FUN | MASTI</div>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+            <div style="font-size:20px;font-family:'Cinzel';font-weight:700;color:#efeaea;margin-bottom:6px;display:flex;align-items:center;">
+                <i class="fa-solid fa-clock" style="margin-right:6px; color:#ffffff;"></i>
+                11:00 AM - 05:00 PM
+            </div>
+
+            <div style="font-size:12px;font-family:'Cinzel';font-weight:700;color:#efeaea;display:flex;align-items:flex-start;line-height:1.3;">
+                <i class="fa-solid fa-location-dot" style="margin-right:8px; color:#ffffff; font-size:22px; margin-top:2px;"></i>
+                <span>
+                    Venue: BLACK HORSE Multi<br>
+                   Cuisine Restaurant<br> And Banquet Hall<br><br>
+                    Vijay Chowk, Gorakhpur<br>
+                </span>
+            </div>
+
+        </div>
+
+        <div class="qr-box">
+            <div id="qrImageBox"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let REAL_PASS = null;
+
+fetch("/config")
+.then(r => r.json())
+.then(c => {
+    REAL_PASS = c.pass;
+    checkSession();
+});
+
+function checkSession(){
+    const exp = localStorage.getItem("shtml_admin");
+    if(exp && Date.now() < parseInt(exp)){
+        unlockPage();
+    }
+}
+
+function adminLogin(){
+    const input = document.getElementById("loginPass").value.trim();
+
+    if(input === REAL_PASS){
+        localStorage.setItem("shtml_admin", Date.now() + 5*60*1000);
+        unlockPage();
+    } else {
+        document.getElementById("loginError").style.display = "block";
+    }
+}
+
+function unlockPage(){
+    document.getElementById("loginOverlay").style.display = "none";
+    document.getElementById("logoutBtn").style.display = "block";
+    document.querySelector(".input-panel").style.display = "flex";
+    document.getElementById("bannerCapture").style.display = "flex";
+}
+
+function logout(){
+    localStorage.removeItem("shtml_admin");
+    location.reload();
+}
+
+function fetchPass(){
+    let id = document.getElementById("idInput").value.trim();
+    if(!id) return alert("Enter Pass ID");
+
+    fetch(`/verify-pass/${id}`)
+    .then(res => res.json())
+    .then(data => {
+        if(!data.success){ alert("Invalid Pass ID"); return; }
+
+        document.getElementById("dynamicName").innerText = data.pass.name.toUpperCase();
+        document.getElementById("passIdDisplay").innerText = `PASS ID: ${id}`;
+
+
+        let qrUrl = `https://ashish.visionhost.cloud/admin-qrs/${id}.png?token=${REAL_PASS}`;
+        document.getElementById("qrImageBox").style.backgroundImage = `url('${qrUrl}')`;
+    });
+}
+
+function downloadBanner(){
+    const banner = document.getElementById("bannerCapture");
+
+    html2canvas(banner, {
+        scale:3,
+        useCORS:true,
+        backgroundColor:null
+    }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "Fresher_Pass.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+}
+</script>
+
+</body>
+</html>
