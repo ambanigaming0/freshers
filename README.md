@@ -55,8 +55,9 @@ Is system ka main focus hai:
 ## 🔄 Working Flow
 
 ```mermaid
-flowchart LR
-    A["🛠️ Admin Panel"]:::admin --> B["📝 Create Pass"]:::create
+flowchart TD
+    A["🛠️ Admin Panel"]:::admin
+    A --> B["📝 Create Pass"]:::create
     B --> C["🔐 Generate Unique QR Code"]:::qr
     C --> D["🎨 Canvas Pass Design"]:::canvas
     D --> E["🎫 Digital Pass Generated"]:::pass
@@ -64,11 +65,11 @@ flowchart LR
     F -->|✅ Valid| G["🎉 Entry Allowed"]:::allow
     F -->|❌ Invalid| H["⛔ Access Denied"]:::deny
 
-    classDef admin fill:#6a0dad,color:#fff,stroke:#fff,stroke-width:2px
-    classDef create fill:#1e90ff,color:#fff,stroke:#fff,stroke-width:2px
-    classDef qr fill:#ff9800,color:#fff,stroke:#fff,stroke-width:2px
-    classDef canvas fill:#00c9a7,color:#fff,stroke:#fff,stroke-width:2px
-    classDef pass fill:#ff4d6d,color:#fff,stroke:#fff,stroke-width:2px
-    classDef scan fill:#00bcd4,color:#fff,stroke:#fff,stroke-width:2px
-    classDef allow fill:#2ecc71,color:#fff,stroke:#fff,stroke-width:2px
-    classDef deny fill:#e74c3c,color:#fff,stroke:#fff,stroke-width:2px
+    classDef admin fill:#6a0dad,color:#fff,stroke:#6a0dad,stroke-width:2px
+    classDef create fill:#1e90ff,color:#fff,stroke:#1e90ff,stroke-width:2px
+    classDef qr fill:#ff9800,color:#fff,stroke:#ff9800,stroke-width:2px
+    classDef canvas fill:#00c9a7,color:#fff,stroke:#00c9a7,stroke-width:2px
+    classDef pass fill:#ff4d6d,color:#fff,stroke:#ff4d6d,stroke-width:2px
+    classDef scan fill:#00bcd4,color:#fff,stroke:#00bcd4,stroke-width:2px
+    classDef allow fill:#2ecc71,color:#fff,stroke:#2ecc71,stroke-width:2px
+    classDef deny fill:#e74c3c,color:#fff,stroke:#e74c3c,stroke-width:2px
