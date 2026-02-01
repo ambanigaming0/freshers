@@ -1,63 +1,54 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=600&size=28&pause=1000&color=4AF626&center=true&vCenter=true&width=600&lines=Freshers+%26+Farewell+Pass+System;QR+Code+Based+Entry+Management;Admin+Panel+%7C+Canvas+Pass+Generator" />
+  <img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=600&size=26&pause=1000&color=00FFB3&center=true&vCenter=true&width=800&lines=Freshers+%26+Farewell+Pass+System;QR+Code+Based+Secure+Entry+System;Canvas+Pass+Generator+%7C+Admin+Panel;Made+By+Ashish+Kumar+Gupta;Discord%3A+mr_ambanigaming+%7C+Server%3A+discord.gg%2Fncop" />
 </p>
 
 <p align="center">
-  🚀 A smart & secure pass management system for college events  
+  🚀 Smart • Secure • Digital Event Pass Management
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Node.js-Backend-green?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Canvas-Pass%20Generator-blue?style=for-the-badge">
-  <img src="https://img.shields.io/badge/QR%20Code-Secure-orange?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Developer-Ashish%20Kumar%20Gupta-blueviolet?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Discord-mr_ambanigaming-5865F2?style=for-the-badge&logo=discord&logoColor=white">
+  <img src="https://img.shields.io/badge/Server-discord.gg%2Fncop-7289DA?style=for-the-badge">
 </p>
 
 ---
 
 ## 🎉 About the Project
 
-**Freshers & Farewell Pass System** ek modern **event entry management system** hai jo college events jaise **Freshers Party** aur **Farewell Function** ke liye specially design kiya gaya hai.
+**Freshers & Farewell Pass System** ek modern aur secure **digital pass management system** hai jo college events ke liye banaya gaya hai.
 
-Is system me:
-- 🎫 **Digital Pass Generate** hota hai  
-- 🔐 **QR Code Based Verification** hota hai  
-- 🛠️ **Admin Panel** se sab kuch control hota hai  
-
----
-
-## ✨ Key Features
-
-✅ **Admin Panel**
-- Pass create & manage
-- User details control
-- QR verification tracking
-
-✅ **QR Code Based Entry**
-- Duplicate entry impossible
-- Fast & secure scanning
-
-✅ **Canvas Pass Generator**
-- Professional looking digital pass
-- Name, role, event & QR code auto embedded
-
-✅ **Secure System**
-- Unique QR for every pass
-- Admin-only access
-
-✅ **Event Friendly**
-- Freshers
-- Farewell
-- College Fest
-- Private Events
+Is system ka main focus hai:
+- 🎫 Professional digital passes
+- 🔐 QR code based secure entry
+- 🛠️ Powerful admin control
 
 ---
 
-## 🖼️ Pass Generation Flow
+## ✨ Features
+
+✅ Admin Panel (Pass Create & Manage)  
+✅ QR Code Based Entry Verification  
+✅ Canvas Based Pass Generation  
+✅ Secure & Fast System  
+✅ Duplicate Entry Protection  
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** Node.js  
+- **Pass Design:** Canvas  
+- **Verification:** QR Code  
+- **Panel:** Admin Dashboard  
+
+---
+
+## 🔄 Working Flow
 
 ```mermaid
 graph TD
 A[Admin Panel] --> B[Create Pass]
 B --> C[Generate QR Code]
 C --> D[Canvas Pass Design]
-D --> E[Final Digital Pass]
+D --> E[Digital Pass]
