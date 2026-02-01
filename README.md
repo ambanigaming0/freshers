@@ -55,8 +55,20 @@ Is system ka main focus hai:
 ## 🔄 Working Flow
 
 ```mermaid
-graph TD
-A[Admin Panel] --> B[Create Pass]
-B --> C[Generate QR Code]
-C --> D[Canvas Pass Design]
-D --> E[Digital Pass]
+flowchart LR
+    A["🛠️ Admin Panel"]:::admin --> B["📝 Create Pass"]:::create
+    B --> C["🔐 Generate Unique QR Code"]:::qr
+    C --> D["🎨 Canvas Pass Design"]:::canvas
+    D --> E["🎫 Digital Pass Generated"]:::pass
+    E --> F["📱 QR Scan at Entry Gate"]:::scan
+    F -->|✅ Valid| G["🎉 Entry Allowed"]:::allow
+    F -->|❌ Invalid| H["⛔ Access Denied"]:::deny
+
+    classDef admin fill:#6a0dad,color:#fff,stroke:#fff,stroke-width:2px
+    classDef create fill:#1e90ff,color:#fff,stroke:#fff,stroke-width:2px
+    classDef qr fill:#ff9800,color:#fff,stroke:#fff,stroke-width:2px
+    classDef canvas fill:#00c9a7,color:#fff,stroke:#fff,stroke-width:2px
+    classDef pass fill:#ff4d6d,color:#fff,stroke:#fff,stroke-width:2px
+    classDef scan fill:#00bcd4,color:#fff,stroke:#fff,stroke-width:2px
+    classDef allow fill:#2ecc71,color:#fff,stroke:#fff,stroke-width:2px
+    classDef deny fill:#e74c3c,color:#fff,stroke:#fff,stroke-width:2px
